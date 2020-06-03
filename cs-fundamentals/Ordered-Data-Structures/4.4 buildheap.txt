@@ -1,0 +1,26 @@
+4.4 build a heap using strings
+/* 
+a. sort the array - it's the heap -> Onlog(n)
+b. insert - heapifyup -> Onlog(n)  
+c. heapifydown -> O(n/2) we only need to check half of the tree since the bottom layer does not have children to compare
+
+load the data in any order into a complete tree 
+call heapifydown on every non-leaf node from the bottom of the tree up to the root
+   - the last level of tree does not matter
+   - any leaf node does not matter
+   - only things in the first of half array needs to have their key property restored
+   - N/2 heapify down operations
+*/
+
+4.5 runtime analysis
+Heap Sort
+a. build a heap: - O(n)
+load the data in any order into a complete tree 
+call heapifydown on every non-leaf node from the bottom of the tree up to the root
+
+b. n*removeMIN - O(nlogn)
+removeMIN for n nodes (heapifydown)
+
+c. swap as needed
+
+- does not rely on the insertion of any item into an existing heap

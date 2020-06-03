@@ -1,0 +1,76 @@
+Methods deal with collision
+
+a. separate chaining (using linkedlist)
+insert at the beginning of the linkedlist
+
+S = [16, 8, 4, 13, 29, 11, 22]
+h(k) = k % 7
+
+0: 
+1: 22 -> 29 -> 8
+2: 16
+3: 
+4: 11 -> 4 
+5: 
+6: 13
+
+insert: O(1)
+remove/find: O(alpha)  alpha=n/N
+load factor(alpha) = the number of elements in the table divided by the size of the table itself, which is the average length of the linked lists stored at each array element. Since the lists are unordered, It would take O(n/N) time to look at all of the elements of the list to see if the desired (key/value) pair is in the list.
+
+b. linear probing hashing
+linear probing handles collisions by finding the next unfilled array element
+look at the next location, probe ahead until we find an empty slot
+loop all the way around until we get to 0 before we can insert the value 22 
+
+0: 22
+1: 8
+2: 16
+3: 29
+4: 4 
+5: 11
+6: 13
+
+problem with linear probing:
+primary cluster: as soon as you start getting a pack of numbers filling up, a lot of things are going to have to be approved until the end of the pack. We are going to end up with a cluster that has a primary set of values all in a single block while the rest of the arrays is going to be fairly sparse
+
+remedy: 
+do not do linear probing, double hashing. In stead of just having linear probe every single time, we are going to have a second hashing function that allows us to hash into a new index that's not necessary immediately following the other points.
+(The subsequent hash functions spread out the storage of values in the array whereas linear probing create clumps by storing the values in the next available empty array location, which makes subsequent additions to the hash table perform even worse.)
+
+c. double hashing: reduce the clumping that can occur in linear probing
+h(k, i) = (h1(k) + i*h2(k)) % 7
+h1(k) = k % 7
+step function: h2(k) = 5 - (k % 5) (range from 1-5)
+
+29 % 7 = 1 -> collision
+second hashing: h2(29) = 5 - (29 % 5) = 1
+so jump 2 steps
+
+11 % 7 = 4 -> collision
+second hashing: h2(11) = 5 - (11 % 5) = 4
+so jump 8 steps
+
+0: 
+1: 8
+2: 16
+3: 29
+4: 4 
+5: 11
+6: 13
+
+As alpha increases, running time of these three functions increase. Double hashing is flat for a while, and then explode when n reaches N. The running time is determined only upon the ratio of the amount of data in our hash table to the size of array and not the actual amount of data itself. When alpha is constant (0.6), the running time is going to be O(1) running time proportional to the data, so we are going to have to resize our array every so often (reharshing to a new spot after resizing the array). 
+
+application: 1.6
+big record: separate chaining
+structure speed: double hashing
+what data structure that hashtable replace: dictionary -> O(1) lookup time
+what constraint exists on hashing that does not exist with BSTs: nearest neighbor
+
+why talk about BSTs at all?  
+O(1) lookup time for hash table
+O(logn) look up time for hash table in AVL tree
+O(logn) range finding or nearest neighbor in AVL tree, and O(n) for hash table
+
+
+

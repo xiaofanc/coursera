@@ -1,0 +1,52 @@
+/* note for btree folder */
+
+/* B-tree of order m: */
+// m = maximum number of keys that a given node can have + 1
+// Goal of BTree: minimize the number of reads (build a tree that uses minimum network seeks/disk seeks to get data)
+-> BTree is an optimized algorithm to optimize around the idea of doing as minimal disk seeks as possible when all of our data cannot fit in main memory
+
+// a. All keys within a node are in sorted order
+// b. Each node contains no more than m-1 keys
+// c. Each internal node (not a leaf node) has exactly one more child than key (at most m children, so a B-Tree of order m is like an m-way tree)
+// - A root node can be a leaf or have [2,m] children
+// - Each non-root, internal node has [ceil(m/2), m] children
+/* Every node inside of BTree is going to be at least half full since we only splitting nodes as soon as they become full. The result of splitting a node is going to be two nodes that are exactly half full */
+// d. All of the leaves in a B-Tree are always going to be on the same level
+
+// how to calculate order m? 
+/* 
+   interior node: 2 keys, 3 children (front, middle, back): m >= 3;
+   internal nodes have between m/2 and m children: m/2 <= 3; m <= 6;
+   there is leaf node that has 4 keys: so m >= 5;
+   m = 5 or 6;
+   Giving the fact that BTrees are generally splitting nodes, it is better to have odd so that splitting can leave a parent node in the middle -> m = 5
+*/
+
+3.2.2 B-Tree Recursive Insert
+// only if the node is full, splitting that node in half and throwing up the middle value to the parent node
+
+3.2.3 B-Tree Search
+// keys_ct_  -> m
+// nextChild = node._fetchChild -> move to next child
+
+// The height of the BTree determines maximum number of seeks possible in search data, and the height of the structure is logm(n)
+// since every single point we are decreasing by a factor of m, so the number of seeks is no more than logm(n) -> same as logn
+// if m is larger, the less seeks we have to do
+
+// search if the key exists in the BTree
+template <typename K>
+bool BTree<K>::_exists(BTree<K>::BTreeNode & node, const K & key) {
+
+  unsigned i;
+  // search each key in the node
+  for ( i = 0; i < node.keys_ct_ && key < node.keys_[i]; i++) { } // Each node contains no more than m-1 keys
+  
+  if (i < node.keys_ct_ && key == node.keys_[i]) { return True; } // find the key
+  
+  if (node.isleaf()) { return False; } else {
+  // move to next child
+    BTreeNode nextChild = node._fetchChild(i);
+    return _exists(nextChild, key);
+  }
+}
+

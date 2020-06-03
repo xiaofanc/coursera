@@ -1,0 +1,51 @@
+4.2.1 minimum spanning tree:
+can be placed over graph that connects every single vertex in the graph using the minimal total number of edges or the minimal weight of all the edges among the graph
+
+input: connected, undirected graph G with edge weights(unconstrained, but must be additive)
+
+output: create a graph G' that happens to be a spanning tree of the graph. 
+- it needs to be a tree (connected, acyclic) no cycle!!
+- has a minimal total weight among all spinning trees
+
+4.2.2 Kruskal's algorithm
+knowing the shorted route on the entire map
+
+minheap: stores edges depending on its weights
+disjoint sets (uptree): every single vertex as its own disjoint sets
+
+remove the first smallest element from minheap, check if the vertices in the element is in the same set (find_leader), if they are do nothing, if not we union them together. Finally you will have only one set which has minimum edges to connect every node in the graph.
+
+find_leader(): find the set identity to check if they are in the same set 
+union(): leader[j] = i 
+how to union two sets: 
+find_leader[G]-> find_leader[H]: [G->F] union [H->E] => [F->E]
+leader()
+
+4.2.3 implementation
+KruskalMST(G):
+    DisjointSets forest
+    foreach (Vertex: G):
+        forest.makeSet(v)                     // make each vertex a disjoint set
+
+    PriorityQueue Q
+    foreach (Edge e: G):
+        Q.insert(e)                           // each edge to minheap -> O(m)
+
+    Graph T = (V, {})                         // G'
+
+    while |T.edges()| < n-1:                  // at least n-1 edges to connect all
+        Edge (u, v) = Q.removeMin()           // pop the smallest edge
+        if forest.find(u) != forest.find(v):  // not in the same set
+            T.addEdge(u, v)                   // add edge into the spanning tree
+            forest.union(forest.find(u), forest.find(v))
+
+
+running time:  n for makeSet + O(mlogm) => O(mlogm)
+priority queue:   heap        sorted array
+building:         O(m)        O(mlogm)
+romovemin:        m*O(logm)   m*O(1)
+total:            O(mlogm)    O(mlogm)
+
+O(logm): heapify down each time
+
+

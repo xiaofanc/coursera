@@ -1,0 +1,23 @@
+// use a function to map the keyspace into a small set of integers
+
+// - hash function: map input(string, int...) into an array index
+// - an array that stores actual data
+// - collision handling strategy (when hash function map two different values to the same point in the array)
+
+1. onto function: every single element in the array is full
+2. petals around rose function: count any dice that has a center pip that's active, and count how many petals are aound that pip
+   dice game [a set of different dices] -> array
+   - only 3 and 5 are counted in petals around rose
+   - so that only 2 or 4 petals aroud the rose
+   - look at any set of inputs(dices) [1, 2, 3, 4, 1] -> 2 since 3 has 2 petals aroud the rose
+   - every single odd number will never be reached in our hash table
+   - there may be a lot of different values that get mapped to 4 if dices only contain dice 5
+
+Hash function:
+A hash: transform an input into an integer
+A compression: confirm that the hash function is in the bounds of the array (%n)
+
+characteristics:
+// computation time: O(1)
+// deterministic: if we hash the string a second time, those two results must be the same
+// satify the simple uniform hashing assumption(SUHA): the result of hash function must be uniform across the entire key space -> p(h(a)) = p(h(b)) = 1/N (petals around rose function violate this assumption)

@@ -1,0 +1,43 @@
+using stack
+Input: G
+Output: A labeling of the edges on G as discovery and back edges
+
+discovery edge: new edges
+back edge: go back to the node that visited before
+if it is a back edge, then go back to the node 
+
+no Queue, look at one incident edge, if it is not explored, mark the edge as discovery, and look at the incident edge of that node. If the node is explored, then go back to the original node.
+
+DFS(G):
+    foreach (Vertex v: G.vertices()):
+        setLabel(v, unexplored)
+    foreach (Edge e: G.edges()):
+        setLabel(e, unexplored)
+    foreach (Vertex v: G.vertices()):
+        if getLabel(v) == unexplored:
+        DFS(G, v)
+        component += 1
+
+DFS(G, v):
+    setLabel(v, visited)
+
+    foreach (Vertex w: G.adjacent(v)):
+        if getLabel(w) == unexplored:
+            setLabel(v, w, discovery)
+            DFS(G, w)
+        elseif getLabel(v, w) == unexplored:
+            setLabel(v, w, back)
+
+running time:
+labelling:
+vertex: unexplored -> explored: 2n = O(n)
+edge: unexplored -> explored: 2m = O(m)
+
+queries:
+vertex: going through every vertex exactly once -> O(n)
+edge: sum(deg(v)) = 2m -> O(m)
+
+=> O(n+m)
+
+
+

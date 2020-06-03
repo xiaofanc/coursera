@@ -1,0 +1,20 @@
+Find the path between certain nodes in a graph that every single node has the exact same weight
+
+Q1: What is the shortest path from A to G?
+Dijkstra
+
+Q2: What is the fastest algorithm to use to find the path from A to G?
+Sometimes BFS(m+n) is faster than Dijkstra(m+nlgn)   
+-> for the unweighted case but not the weighted cases
+
+Which of the following is the optimal run time complexity to find the shortest path, if it exists, from a vertex to all of the other vertices in a weighted, directed graph of n vertices and m edges? Dijkstra(m+nlgn) 
+
+Q3: What is the fastest path from A to G that visits L?
+BFS (spanning tree)
+
+Q4: What is the fastest path to find the path?
+starts from L instead of A and run BFS once
+A single breadth first traversal from the landmark vertex finds the shortest paths from it to the start vertex and the end vertex, and their combination is the shortest path from start to end that also visits the landmark.
+
+
+

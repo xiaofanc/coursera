@@ -1,0 +1,33 @@
+Find the shortest weighted path from a single source (starting point) to every connected vertex (SSSP) in a directed graph
+
+Does not work for negative weights with cycle, also work for undirected graph
+
+input: G, s (starting vertex)
+output: T, 
+
+PrimMST(G, s):
+    foreach (Vertex v: G):
+        d[v] = +inf   // initiate the weight as +inf for each edge
+        p[v] = Null
+    d[s] = 0          // initiate the weight as 0 for the starting node s
+
+    PriorityQueue Q                 // min distance, defined by d[v]
+                                    // [A:0, B:+inf, C:+inf, D:+inf ...]
+    Q.buildHeap(G.vertices())
+    Graph T                         // "labeled set"
+
+    repeat n times:
+        Vertex m = Q.removeMin()    // A
+        T.add(m)                    // add A to the label set
+        foreach (Vertex v: neighbors of m not in T):
+            if cost(v, m) + d[m] < d[v]:  // total weight from A   
+                // add node with the smallest total weight to label set
+                d[v] = cost(v, m) + d[m]  // d[B] = 10, d[F] = 7
+                p[v] = m                  // p[B] = A
+
+    return T
+
+running time:
+using Fibonacci heap: O(m + nlgn)
+
+

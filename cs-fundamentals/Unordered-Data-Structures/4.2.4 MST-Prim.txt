@@ -1,0 +1,45 @@
+Prim's algorithm
+
+Partition Property:
+consider an arbitrary partition of the vertices on G into two subsets U and V
+let e be an edge of minimum weight across the partition, then e is part of some minimum spanning tree.
+
+pick up a node as label set, other nodes out of the label set is the unlabel set, then find the minimum edge across the partition, add it to the MST, and redraw the partition
+
+input: G, s (starting vertex)
+output: T, a minimum spanning tree of G
+
+PrimMST(G, s):
+    foreach (Vertex v: G):
+        d[v] = +inf   // initiate the weight as +inf for each edge
+        p[v] = Null
+    d[s] = 0          // initiate the weight as 0 for the starting node s
+
+    PriorityQueue Q                 // min distance, defined by d[v]
+                                    // [A:0, B:+inf, C:+inf, D:+inf ...]
+    Q.buildHeap(G.vertices())
+    Graph T                         // "labeled set"
+
+    repeat n times:
+        Vertex m = Q.removeMin()    // A
+        T.add(m)                    // add A to the label set
+        foreach (Vertex v: neighbors of m not in T):
+            if cost(v, m) < d[v]:   // total cost between nodes (update weight)
+                d[v] = cost(v, m)   // d[B] = 2, d[D] = 17, d[F] = 16
+                p[v] = m            // p[B] = A
+
+    return T
+
+
+running time:  
+priority queue:    adj.matrix           adj.list
+heap               O(n^2 + mlgn)        O(mlogn + nlogn)
+unsorted array     O(n^2)               O(n^2)
+
+sparse tree: m == n: O(mlogm)
+dense tree:  m == n^2: O(n^2logn)
+For the dense graph, Prim is able to run things proportional to the vertices in the graph, not always necessarily to the numbers of edges in the graph
+
+
+
+

@@ -1,0 +1,39 @@
+/* note for stack folder */
+
+last-in-first-out like a pile of papers
+A queue may be implemented with an array or a singly-linked list
+Both an array-based and a list-based implementation can be built to run in constant O(1) running time
+
+ADT: create, push (top), pop (top), empty
+
+#include <iostream>
+#include <stack>
+
+int main() {
+  // Create a std::stack:
+  std::stack<std::string> s;
+
+  // Add several strings to the stack:
+  s.push( "Orange" );
+  s.push( "Blue" );
+  s.push( "Illinois" );
+
+  // Print the front of the stack out and pop it off:
+  std::cout << "First pop(): " << s.top() << std::endl;
+  s.pop();  -> Illinois
+
+  // Add another string and then print ouf the front of the stack:
+  s.push( "Illini" );
+  std::cout << "Second pop(): " << s.top() << std::endl; -> Illini 
+
+  return 0;
+}
+
+        create a stack data structure
+           array       linkedin list (singly-linked list is enough for O(1))
+create     O(1)        O(1)
+push       O(1)*       O(1)
+pop        O(1)*       O(1)
+empty      O(1)        O(1)
+
+Singly-linked list is enough since all of the operations happens on the top.

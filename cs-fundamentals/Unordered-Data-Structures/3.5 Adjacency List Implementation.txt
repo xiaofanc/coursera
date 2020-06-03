@@ -1,0 +1,57 @@
+Graph functions: adjacency list implementation
+
+vertex list: hashtable
+edge lsit: hashtable
+adjacency list: maintain a linkedlist of all adjacent edges to a given vertex 
+U -> a -> c, instead of storing a and c, we use pointers to point to the edge in the edge lists, and use another pointer to point back to the vertex list
+
+vertex_list  adjacency_list        edge_list
+U         -> a -> b                U  V  a
+V         -> a -> c                U  W  b
+W         -> b -> c -> d           V  W  c
+Z         -> d                     W  Z  d 
+          stores pointers point to the edge in the edge list
+          use another pointer to point back to the adjacency_list
+
+- insertVertex(k key)    O(1) 
+add vertex to the list
+
+- removeVertex(Vertex v) -> O(degree of vertex)
+romove vertex from list and also remove the linkedlist of the vertex
+
+- areAdjacent(Vertex v1, Vertex v2) -> min (O(degree of v1), O(degree of v2))
+go through the linkedlist of v1, check if in the edge lists any pointer points to vertex v2, min (O(degree of v1), O(degree of v2)) since we have to go through every single incident edge in their list
+
+- incidentEdges(Vertex v) -> O(degree of vertex)
+walk the linkedlist
+
+
+                     edge list        adjacent matrix     adjacent list
+space                 O(m+n)              O(n**2)            O(m+n)
+insertVertex(v)       O(1)                O(n)               O(1)
+removeVertex(v)       O(m)                O(n)               deg(v)
+* remove vertex and all the edges       
+insertedge(v,w,k)     O(1)                O(1)               O(1) 
+removeedge(v,w)       O(1)                O(1)               O(1)
+incidentedges(v)      O(m)                O(n)               deg(v)
+areadjacent(v,w)      O(m)                O(1)               min(deg(v), deg(w)) 
+
+Suppose you want to implement a function called neighbors(v) that returns the list of vertices that share an edge with vertex v. Which representation would be the better choice for implementing this neighbors() function?
+-> adjacency list
+why?
+The adjacency list requires a simple walk through the list of pointers to adjacent edges to find the neighboring vertices. This representation has an "output sensitive" running time meaning it runs as fast as possible based on the minimum amount of time needed to output the result.
+
+
+Suppose you want to implement a function called neighborsQ(v1,v2) that returns true only if vertices v1 and v2 share an edge. Which representation would be the better choice for implementing this neighborsQ() function?
+-> adjacency matrix
+why?
+The neighborsQ(v1,v2) function can simply lookup the appropriate v1,v2 entry in the adjacency matrix, which takes constant O(1) time. This representation supports the fastest method for implementing this query.
+
+Which graph representation would be the best choice for implementing a procedure that only needs to build a graph from a stream of events.
+->edge list
+why?
+The Edge List performs worse in general than the Adjacency Matrix and the Adjacency List representations, but it is much simpler and easier to implement. It also takes less space than the alternatives, and can insert vertices and edges in constant time. The adjacency list can also insert vertices and edges in constant time, but if those are the only operations needed, then one need not waste space and additional code on building the adjacency list on top of the edge list.
+
+Which graph representation has a better worst-case storage complexity than the others for storing a simple graph of n vertices?
+-> same 
+why?

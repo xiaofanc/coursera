@@ -1,0 +1,17 @@
+          BST-avg     BST-worse   sorted-array   sorted-list
+find      O(lgn)        O(n)       O(lgn)         O(n)
+insert    O(lgn)        O(n)       O(n)           O(n)
+remove    O(lgn)        O(n)       O(n)           O(n)
+insert and remove is based on find.
+
+A binary search tree has an average-case run time of O(lgn) but a worst-case run time of O(n) which makes it slower (like a linked list)
+in the worst case than one of the other options. The binary search tree must be guaranteed to be balanced to maintain
+O(lgn) search time in the worst case.
+
+height balance factor:
+The height balance factor (b) of a node is the difference in height between its two subtrees
+height(right) - height(left)
+if subtree is the empty tree, we define the height to be -1; (relative to that the edge from the parent to subtree does not count)
+
+There are n! different ways to create BSTs with the same data
+Balanced BST: every node's d=-1 or 0 or 1

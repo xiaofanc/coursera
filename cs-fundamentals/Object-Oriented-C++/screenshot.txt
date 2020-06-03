@@ -1,0 +1,5 @@
+1. open chrome dev tool (cmd+alt+i)
+2. go to console
+3. $('div.rc-TunnelVisionHeader').remove();
+4. close chrome dev tool (cmd+alt+i)
+5. cmd+shift+y, screenshot

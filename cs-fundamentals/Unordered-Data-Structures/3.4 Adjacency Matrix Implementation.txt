@@ -1,0 +1,26 @@
+Graph functions: adjacency matrix implementation
+
+vertex list: hashtable
+edge lsit: hashtable
+adjacency matrix: store whether there is an edge between two vertices
+-> instead of storing 1, we can store a pointer that points directly to the edge list which is the edge between vertices
+
+vertex_list   edge_list        adjacency matrix
+U             U  V  a          U  V  W  Z
+V             U  W  b       U     a  b  
+W             V  W  c       V  a     c
+Z             W  Z  d       W  b  c     d
+                            Z        d
+                            stores pointers point directly to the edge list
+
+- insertVertex(k key)    O(1) -> O(n)
+add vertex to the list and needs to add a row and a column to correspond the new vertex with every other existing vertices in the matrix
+
+- removeVertex(Vertex v) -> O(n)
+romove vertex from list and shrink the matrix
+
+- areAdjacent(Vertex v1, Vertex v2) -> O(1)
+check matrix directly
+
+- incidentEdges(Vertex v) -> O(n)
+look at the set of all of the vertices twice: check col U and row U

@@ -1,0 +1,39 @@
+Node = Vertex
+n = number of vertices in the graph
+m = number of edges
+
+incident edge:
+edge that directly connects to that node
+degree of node:
+count of how many incident edges that it has
+adjacent vertices:
+every single vertex is adjacent to a node
+Cycle:
+path with common begin and end vertex
+simple graph:
+a graph with no self loops or multi-edges
+subgraph:
+a subset of graph
+
+complete subgraph:
+connected subgraph:
+connected component:
+acyclic subgraph:
+spanning tree:
+
+runnnig time are often reported by n, but often depend on m
+
+How many edges?
+minimum edges:
+- not connected: 0
+- connented: n-1
+
+maximum edges:
+- simple graph: each node has edges to every other node -> n*(n-1)/2 = O(n*2)
+- not simple: +inf
+
+sum of all the degrees of all of the nodes: 2*m (node A and B has outbound edge and inbound edge although they are the same)
+
+
+
+

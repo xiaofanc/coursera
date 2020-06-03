@@ -1,0 +1,36 @@
+Graph functions: edge list implementation
+ADT:
+- insertVertex(k key)
+- insertEdge(Vertex v1, Vertex v2, K key)  (key is the data of edge)
+
+- removeVertex(Vertex v)
+- removeEdge(Vertex v1, Vertex v2)
+
+- incidnetEdges(Vertex v)  (edge that directly connects to that node)
+- areAdjacent(Vertex v1, Vertex v2)
+
+- origin (Edge e)     a -> b
+- destination (Edge e)
+
+implementation: edge list
+vertex list - hashtable or array
+edge list   - hashtable or array
+
+vertex_list   edge_list
+U             U  V  a
+V             U  W  b
+W             V  W  c
+Z             W  Z  d 
+
+- insertVertex(k key)    -> O(1)
+- removeVertex(Vertex v) -> O(m)
+
+We should actually say O(m) for removeVertex, because even if it's O(1) to remove the vertex itself from a hash table of vertices, in this edge list structure, it's necessary to walk through all the edge records to find ones with the removed vertex and remove those edges. Therefore, we get O(m) overall to remove a vertex.
+
+- areAdjacent(Vertex v1, Vertex v2) -> O(m)
+need to go over edge lists to find whether they are adjacent
+
+- incidentEdges(Vertex v) -> O(m)
+need to go over edge lists to get all of the edges that are incident to vertex v
+
+

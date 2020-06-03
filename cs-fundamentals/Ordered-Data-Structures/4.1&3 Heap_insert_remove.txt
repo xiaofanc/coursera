@@ -1,0 +1,89 @@
+/* note for heap folder */
+// Heap is a complete binary tree
+
+// minHeap is a complete binary tree T is a min-heap if root is smaller than any node in the left subtree and right subtree
+// if heap is represented as an array in level order: start from index 1, parent node has index i, then the left child has index 2*i, and the right child has index 2*i+1
+// root = array[1]
+// ADT: insert, removemin
+
+4.2 Heap Insert - O(nlogn)
+insert(3)
+// heap.hpp
+// growarray: double the size to ensure insert is an amortized O(1) time
+// heapifyup index; insert the new element at the end of the array
+
+template <typename T>
+void Heap<T>::insert(const T key) {
+  // Check to ensure there’s space to insert an element
+  // ...if not, grow the array
+  if ( size_ == capacity_ ) { _growArray(); } 
+
+  // Insert the new element at the end of the array
+  size_++;
+  item_[size_] = key;
+  
+  // Restore the heap property
+  _heapifyUp(size_);  // heapify up to have the right order
+
+  std::cout << "After Heap<T>::insert(key = " << key << "): ";
+  for (unsigned i = 1; i <= size_; i++) {
+    std::cout << item_[i] << " ";
+  }
+  std::cout << std::endl;
+}
+
+// heapifyup index; swap parent and child if child is smaller
+template <class T>
+void Heap<T>::_heapifyUp( unsigned index ) {
+  if ( !_isRoot(index) ) {     // if (index > 1 )
+    if ( item_[index] < item_[ _parent(index) ] ) {
+      std::swap( item_[index], item_[ _parent(index) ] );
+      _heapifyUp( _parent(index) );
+    }
+  }
+}
+
+4.3 Heap RemoveMIN - O(nlogn)
+// swap the last element of the level-order array with the root so that we can have the complete tree as well 
+// heapify down to have the right order
+
+template <class T>
+T Heap<T>::removeMin() {
+  // Swap with the last value
+  T minValue = item_[1];
+  std::swap( item_[1], item_[size_--] );  // size-1 at the same time
+
+  // Restore the heap property
+  _heapifyDown();
+
+  // Return the minimum value
+  return minValue;
+}
+
+template <class T>
+void Heap<T>::_heapifyDown() {
+  _heapifyDown(1);    // heapify down root after swapping
+}
+
+template <class T>
+void Heap<T>::_heapifyDown( unsigned index ) {
+  if ( !_isLeaf(index) ) {                         // compare with children
+    T minChildIndex = _minChild(index);            // root
+    if ( item_[index] > item_[minChildIndex] ) {   // root > children
+       std::swap( item_[index], item_[minChildIndex] );
+       _heapifyDown( minChildIndex );
+    }
+  }
+}
+
+What is the run-time algorithmic complexity of calling heapifyDown on every non-leaf node in a complete tree of n nodes?
+O(n^2) wrong:
+We would need O(n^2) time to run an O(n) procedure on all of the non-leaf nodes (which are about half of the nodes). 
+But at worst, heapifyDown just propagates down the tree from the node to a leaf node, and this would be lg n steps for the root,
+which has the longest heapifyDown run-time of all the nodes.
+We would need at least O(n) time to run any procedure on all of the non-leaf nodes, which are about half of the nodes.
+
+heapifyDown is recursive, but it is only called on one of its children.
+heapifyDown needs to find a valid location in the heap for the current node's value, and may need to walk further down 
+the heap even if its children are already valid heaps.
+The maximum number of times that heapifydown is called is one plus the height of the node.

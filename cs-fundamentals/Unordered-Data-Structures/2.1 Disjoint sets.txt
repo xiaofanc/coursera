@@ -1,0 +1,31 @@
+Disjoint sets (= union-find)
+Disjoint sets represent a partitioning of unique values into subsets that do not have any items in common. That is, each value belongs to exactly one of the sets. This is why each element can be used as an array index look up its "up-tree" parent, which represents the set the element belongs to.
+
+[[2,5,9],[7],[0,1,4,8],[3,6]]
+set identity element is the first element of each set
+find(4) = 0 (identity element)
+find(8) = 0
+
+union:
+if (find(2) != find(7)) {
+    union(find(2), find(7));
+}
+now find(7) = 2
+
+2.1.2 
+implement #1:
+put the element in sets to an array:
+[0,1,4], [2,7], [3,5,6]
+
+sets:  0,1,2,3,4,5,6,7
+array: 0,0,2,3,0,3,3,2
+
+find set identity of element: array[elemment] -> O(1)
+
+how to do union for set1 and set2?  -> O(n)
+Since we do not know what is in set identity 2, we can loop through the array,
+and update 2 to 0
+
+
+
+

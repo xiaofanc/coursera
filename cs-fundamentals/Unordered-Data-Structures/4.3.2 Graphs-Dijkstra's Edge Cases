@@ -1,0 +1,7 @@
+Q. How does Dijkstra heandle a single heavy-weight path vs. many light-weight paths?
+
+Q. How does Dijkstra handle a path with negaive weight?
+Does not exist a shortest path
+
+Q. How does Dijkstra handle a undirected graph?
+same 

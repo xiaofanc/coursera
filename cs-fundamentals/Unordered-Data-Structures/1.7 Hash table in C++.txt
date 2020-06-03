@@ -1,0 +1,54 @@
+1.7 Hash table in C++
+
+std::map  -> dictionary  -> red-black tree -> lg(n) running time
+::operator[]
+::insert
+::erase
+
+::lower_bound(key): iterator to first element <= key
+::upper_bound(key): iterator to first element > key
+-> maintain keys in a sorted order
+
+std::unordered_map  -> hashtable -> O(1) lookup time
+::operator[]
+::insert
+::erase
+
+::load_factor() -> alpha
+::max_load_factor(ml) -> set the max load factor
+
+The running time is determined only upon the ratio of the amount of data in our hash table to the size of array and not the actual amount of data itself. When alpha is constant (0.6), the running time is going to be O(1) running time proportional to the data.
+
+std::unordered_map<std::string, int> mymap;
+std::cout << mymap["five"] << std:endl;
+// if the key does not exist, it will be created as soon as you refer to it with [], and initialized with some default value
+
+mymap.count("five") -> whether a key exists or not
+mymap.size() -> number of keys
+mymap.at("five") -> search for a given key, throw an exception if not found
+mymap.find("five") -> iterator points to the pair found, or otherwise to the end iterator given by end()
+mymap.erase("five") -> eliminate key and value
+
+Pairs
+std::pair<std::string, int> mypair;
+mypair.first = "Hello"
+mypair.second = 42;
+
+std::pair<std::string, int> anotherPair = std::make_pair("Hello", 42)
+
+std::pair<std::string, int> anotherPair = {"Hello", 42}
+
+using StringIntPair = std::pair<std::string, int>; 
+StringIntPair anotherPair = {"sevens", 777};
+
+std::unordered_map<int, int> lookupTable = {{1, 10}, {2, 20}, {3, 30}}; std::cout << lookupTable[2] << std::endl;
+// output: 20
+
+Memoization: memoized Longest Palindrome Length
+
+// Traversing an unordered map 
+    for (auto x : mymap) {
+      cout << x.first << " " << x.second << endl; 
+    }
+
+

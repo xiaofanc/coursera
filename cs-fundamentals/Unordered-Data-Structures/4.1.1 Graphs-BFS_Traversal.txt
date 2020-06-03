@@ -1,0 +1,79 @@
+Graphs: not ordered; no obvious start; no notion of completeness
+
+Traversal: BFS -> Spinning Tree
+Queue
+
+node: incident nodes
+A: [B,C,D]
+B: [A,C,E]
+C: [A,B,D,E,F]
+D: [A,C,F,H]
+E: [B,C,G]
+F: [C,D,G]
+G: [E,F,H]
+H: [D,G]
+
+Add A into Queue, pop A to visited array, add incident nodes (which was not visited and not in the Queue) into Queue; repeat
+
+discovery edge: edge when we first see that particular node
+cross edge: edge when we see a node that was dicovered before
+
+Input: G
+Output: A labeling of the edges on G as discovery and cross edges
+
+BFS(G):
+    foreach (Vertex v: G.vertices()):
+        setLabel(v, unexplored)
+    foreach (Edge e: G.edges()):
+        setLabel(e, unexplored)
+    foreach (Vertex v: G.vertices()):
+        if getLabel(v) == unexplored:
+        BFS(G, v)
+        component += 1
+
+BFS(G, v):
+    Queue q
+    setLabel(v, visited)
+    q.enqueue(v)
+
+    while !q.empty():  // O(n)
+    v = q.dequeue()
+    foreach (Vertex w: G.adjacent(v)): // sum(degree(v)) for all n nodes = 2m; O(2m)
+        if getLabel(w) == unexplored:  // If node w is unexplored
+            setLabel(v, w, discovery)
+            setLabel(w, visited)
+            q.enqueue(w)
+        elseif getLabel(v, w) == unexplored: // w is explored, but the edge was not
+            setLabel(v, w, cross)
+            cycle = True
+
+while: queue has all nodes from the graph: O(n)
+for-loop: 
+a. for every vertex inside of the list of adjacent vertices. That could be all other nodes if we have fully-connected graph -> up to O(n)
+b. independently sum(degree(v)) for all n nodes is O(2m)
+
+O(n*n) - fully connected
+O(n+2m) -> m maybe n^2 - partially connected
+
+4.2 Grpah bfs analysis
+Q: shorted path from A to H?
+A - D - H (pass discovery edge)
+
+Q: shorted path from E to H?
+unknown, only know the shorted path from the starting node
+A breadth first search adds vertices connected to the current frontier of vertices using a queue, so that all vertices a given number of edges away from the start vertex must have been processed through the queue before the next wave of vertices can be processed. Since vertices are added in this edge-length order, the breadth first traversal finds the shortest path from the start vertex to any vertex, but this is only true for the start vertex.
+
+Q: how does a cross edge relate to distance between start point and current location?
+by following cross edge, we will never get more than one further from start
+-> cross edge always gives us the same nearby neighbor relative to starting location, and it is going to be about the same depth from starting point
+
+Q: What is the structure made by A by this series of discovery edges?
+A spannig tree (spans every single vertex in our graph)
+
+Q: How to find the minimum spanning tree with BFS?
+A minimum spanning tree for a weighted graph can be found through a greedy breadth-first algorithm that simply chooses from the entire queue the least weight edge to add.
+
+
+
+
+

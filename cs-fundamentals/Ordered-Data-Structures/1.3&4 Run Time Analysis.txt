@@ -1,0 +1,38 @@
+
+array and list are all ordered collections
+
+access a given index:
+array: O(1)
+list: O(n)
+
+resize: when insert at front
+array:
+a. when the array is full, add 2 to the capacity
+total number of copies: r^2+r  (r=n/2, n is the total number of data in the current array) -> O(n^2)
+b. when the array is full, double the capacity
+total number of copies: 2*(2^r-1) (r=lg(n)) -> O(n) for n numbers -> amortized constant time O(1) 
+list: O(1)
+
+find data:
+find data in an unsorted array: O(n)
+find data in a sorted array: binary search -> O(lgn)
+find data in a list: O(n)
+
+insert/delete a new element immediately afterwards given a element:
+array: O(n) since we need to copy up to half of the array to make space for the new element
+list: O(1) since we do not need to copy over data
+
+replace a value of an index:
+array: O(1)
+linked list: O(n) to find the index first
+
+
+
+
+
+
+
+
+
+
+

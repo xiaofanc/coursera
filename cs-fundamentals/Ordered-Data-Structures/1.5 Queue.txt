@@ -1,0 +1,41 @@
+/* note for queue folder */
+
+first-in-firs-out liking waiting in line
+A queue may be implemented with an array or a doubly-linked list
+Both an array-based and a list-based implementation can be built to run in constant O(1) running time
+
+Abstract Data Type (ADT): how data interacts with the structure
+Queue ADT: create, push(top), pop(end), empty
+
+#include <iostream>
+#include <queue>   // standard library
+
+int main() {
+  // Create a std::queue:
+  std::queue<std::string> q;  // create a queue with string
+
+  // Add several strings to the queue:
+  q.push( "Orange" );
+  q.push( "Blue" );
+  q.push( "Illinois" );
+
+  // Print the front of the queue out and pop it off:
+  std::cout << "First pop(): " << q.front() << std::endl;
+  q.pop();  -> Orange
+
+  // Add another string and then print ouf the front of the queue:
+  q.push( "Illini" );
+  std::cout << "Second pop(): " << q.front() << std::endl;  -> Blue
+
+  return 0;
+}
+
+        create a queue data structure
+           array       linkedin list (doubly-linked list required for O(1))
+create     O(1)        O(1)
+push       O(1)*       O(1)
+pop        O(1)*       O(1)
+empty      O(1)        O(1)
+
+*amortized runtime; occasional need to double the capacity of the array or shrink the size to free unused memory
+** a modified singly-linked list with head and tail and next pointer is fine. if you choose “push”, you can use the tail pointer and the tail node’s next pointer to append a new item to the tail in O(1); you can use the head pointer and head node’s next pointer to “pop” the existing head item in O(1) while updating the head pointer to point to the next item remaining after it in the list
