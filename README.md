@@ -1,4 +1,4 @@
-# coursera classes
+# coursera specialization
 
 Deep Learning Specialization: https://www.coursera.org/specializations/deep-learning
 
