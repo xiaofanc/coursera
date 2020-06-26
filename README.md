@@ -5,3 +5,9 @@ Deep Learning Specialization: https://www.coursera.org/specializations/deep-lear
 Machine Learning: https://www.coursera.org/learn/machine-learning
 
 CS fundamentals Specialization: https://www.coursera.org/specializations/cs-fundamentals
+
+* Object-Oriented-C++
+
+* Ordered-Data-Structures
+
+* Unordered-Data-Structures
