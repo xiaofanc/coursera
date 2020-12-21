@@ -43,4 +43,56 @@ CHIP ALU {
 
     PARTS:
    // Put you code here:
+   // zero the x/y input when sel = 1:
+   Mux16(a=x, b=false, sel=zx, out=zxout);
+   Mux16(a=y, b=false, sel=zy, out=zyout);
+
+   // negate the x/y input when sel = 1:
+   Not16(in=zxout, out=Notx);
+   Not16(in=zyout, out=Noty);
+   Mux16(a=zxout, b=Notx, sel=nx, out=zxout2);
+   Mux16(a=zyout, b=Noty, sel=ny, out=zyout2);   
+
+   // integer 2's complement addition:
+   Add16(a=zxout2, b=zyout2, out=addout);
+   // bitwise and:
+   And16(a=zxout2, b=zyout2, out=andout);
+
+   Mux16(a=andout, b=addout, sel=f, out=fout);  
+
+   // bitwise not:
+   Not16(in=fout, out=Notfout);
+   // if (out < 0) set ng = 1
+   // check if out[0..15] == 0
+   Mux16(a=fout, b=Notfout, sel=no, out=out, out[0..7]=by1, out[8..15]=by2, out[15] = ng);  
+
+   // if (out == 0) set zr = 1:
+   // now check if zr (all bits 0): if all bits 0, then output 0 using Or8Way
+   Or8Way(in=by1, out=pos1);
+   Or8Way(in=by2, out=pos2);
+   Or(a=pos1, b=pos2, out=pos);
+   Not(in=pos, out=zr);
+   
+
+
+
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }
