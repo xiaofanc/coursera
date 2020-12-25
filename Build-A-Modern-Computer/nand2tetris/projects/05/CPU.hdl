@@ -39,5 +39,79 @@ CHIP CPU {
         pc[15];          // address of next instruction
 
     PARTS:
+    // A-instruction: starts from 0
+    // @ value;
+    // 0 v v v, v v v v, v v v v, v v v v
+
+    // C-instruction: starts from 1
+    //                 |<--- comp ------>|   <-dest->  |  <-jump-> |
+    // Binary: 1 1 1   a c1 c2 c3 c4 c5 c6   d1 d2 d3     j1 j2 j3
+
     // Put your code here:
+    // addressM
+    // if instruction[15] == 1:
+    //     C-instruction
+    // else:
+    //     A-instruction
+    // whether it is an A-instruction
+    Not(in=instruction[15], out=Ainstruction);
+
+    // Mux16 select whether to put address of ALU output or A-instruction
+    Mux16(a=outALU, b=instruction, sel=Ainstruction, out=inA);
+
+    // Whether store the computed value to A register;
+    // A-instruction or C-instruction + d1 = 1
+    Or(a=Ainstruction, b=instruction[5], out=loadA);
+
+    // The first 0/1 has no meaning, so [0..14] is enough
+    ARegister(in=inA, load=loadA, out=outA, out[0..14] = addressM);
+
+    // outM
+    // load to D: C-instruction and d2 = 1
+    And(a=instruction[15], b=instruction[4], out=loadD);
+    DRegister(in=outALU, load=loadD, out=outD);
+    // select A or M:
+    // if a == 1:
+    //   outAM=inM
+    // else:
+    //   outAM=outA
+    Mux16(a=outA, b=inM, sel=instruction[12], out=outAM);
+    // c1:inst[11] .. c6:inst[6] for computation
+    ALU(x=outD, y=outAM, 
+        zx=instruction[11], nx=instruction[10], 
+        zy=instruction[9],ny=instruction[8], 
+        f=instruction[7], no=instruction[6], 
+        zr=isZero, ng=isNeg, out=outALU, out=outM);  
+
+    // writeM
+    // C-instruction and d3 = 1
+    And(a=instruction[3], b=instruction[15], out=writeM);
+
+    // pc
+    // decide if there is a jump based on the jump bit and outALU
+    Not(in=isNeg, out=NotNeg);  //not negative
+    Not(in=isZero, out=NotZero);  //not zero
+    And(a=NotNeg, b=NotZero, out=isPos);  // positive
+    // j3 = 1, outALU > 0
+    And(a=isPos, b=instruction[0], out=jgt);
+    // j2 = 1, outALU = 0
+    And(a=isZero, b=instruction[1], out=jeq);
+    // j1 = 1, outALU < 0
+    And(a=isNeg, b=instruction[2], out=jlt);
+
+    Or(a=jgt, b=jeq, out=jge);
+    Or(a=jge, b=jlt, out=jump);
+    And(a=instruction[15], b=jump, out=loadPC);
+
+    // If reset == 0 :
+    //    if there is a jump, PC is set to the value of A-register
+    //    else no jump, pc++
+    // else reset == 1:
+    //    pc = 0
+    PC(in=outA, load=loadPC, reset=reset, inc=true, out[0..14]=pc);
+
+
+
+
+
 }

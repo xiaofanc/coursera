@@ -21,6 +21,10 @@
  * memory map. The behavior in these addresses is described in the 
  * Screen and Keyboard chip specifications given in the book.
  */
+//                               2^13
+// RAM:      000000000000000 to 011111111111111 (2^14 = 16384: 0 - 16383th)
+// Screen:   100000000000000 to 101111111111111 (2^13 = 8192:  16384th - 24575th)
+// Keyboard: 110000000000000 (24576th)
 
 CHIP Memory {
     IN in[16], load, address[15];
@@ -28,4 +32,25 @@ CHIP Memory {
 
     PARTS:
     // Put your code here:
+    // Dmux4Way can decide which part to select: 00, 01, 10, 11;
+    DMux4Way(in=load, sel=address[13..14], a=loadrama, b=loadramb, c=loadscreen, d=loadkbd);
+    // combine the RAM;
+    Or(a=loadrama, b=loadramb, out=loadram);
+
+    /**
+     * Memory of 16K registers, each 16 bit-wide. Out holds the value
+     * stored at the memory location specified by address. If load==1, then 
+     * the in value is loaded into the memory location specified by address 
+     * (the loaded value will be emitted to out from the next time step onward).
+     */
+
+    RAM16K(in=in, load=loadram, address=address[0..13], out=ramout);
+    Screen(in=in, load=loadscreen, address=address[0..12], out=scrout);
+    // read only;
+    Keyboard(out=kbdout); 
+    // output the selected data;
+    Mux4Way16(a=ramout, b=ramout, c=scrout, d=kbdout, sel=address[13..14], out=out);
+
+
+
 }
