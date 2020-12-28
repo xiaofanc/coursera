@@ -1,0 +1,46 @@
+// push constant 10
+// Alex's sol line 1
+@10		A=10, M=RAM[10]
+D=A		D=10
+@SP		A=0
+A=M		A=RAM[0]=*Stack[0]=256
+M=D		RAM[256]=10
+@SP		A=0
+M=M+1	RAM[0]=257
+
+
+// pop local 0
+// Alex's sol line 9
+@LCL	A=LCL=1
+D=M 	D=RAM[1]=300
+@0		A =0
+A=D+A	A=D+A=300+0=Local[0]
+D=A		D=Local[0]=300
+@R13	A=13
+M=D		RAM[13]=D=Local[0]=300
+@SP		A=0
+M=M-1	RAM[0] = 257-1 = 256
+A=M 	A=256
+D=M 	D=RAM[256] # D = stack[-1]
+@R13	A=13
+A=M 	A=RAM[13]=*Local[0]=300
+M=D 	RAM[300]=RAM[Local[0]] = D = stack[-1]
+
+
+// pop local 0
+// Havi's sol line 9
+@SP		A=0
+M=M-1	RAM[0] = 257-1=256
+@0		A=0
+D=A 	D=0
+@LCL	A=LCL=1
+A=M 	A=RAM[LCL]=300
+AD=D+A  A=D=D+A=300+0=300 = Local[0]
+@R13	A=13
+M=D		RAM[13]=300
+@SP		A=0
+A=M 	A=RAM[0]=256
+D=M 	D = RAM[256] = Stack[0]
+@R13	A=13
+A=M 	A=RAM[13]=300= Local[0]
+M=D 	RAM[Local] = Stack[0]

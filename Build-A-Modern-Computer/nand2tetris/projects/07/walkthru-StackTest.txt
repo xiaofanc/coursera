@@ -1,0 +1,32 @@
+put 17 and 17 on stack
+
+RAM[256] = 17
+RAM[257] = 17
+RAM[SP] = 258
+
+// eq Alex's
+@SP		A=0
+M=M-1	RAM[0] = 258-1 = 257
+A=M 	A = 257
+D=M 	D = RAM[257] = Stack[1] = 17		D = stack.pop()
+@SP		A = 0
+M=M-1	RAM[0] = 257-1 = 256
+@SP		A = 0
+A=M 	A = 256
+D=M-D	D = RAM[256]-17 = current stack top - prev stack top
+@True.0 A=@True.0 // prepare jump location for ROM
+D;JEQ	if D==0: jump to (True.0) which is line 25
+@SP		A=0										FALSE
+A=M 	A = RAM[0] = 256						|
+M=0 	RAM[256] = 0 		Stack.push(False)	|
+@End.0  A=@End.0								|
+0;JMP 	always jump to @End.0
+(True.0)
+@SP		A= 0
+A=M 	A = RAM[0] = 256
+M=-1 	RAM[256] = stack[0] = true
+(End.0)
+@SP		A =0
+M=M+1	RAM[0] = 256+1 = 257
+
+// eq Havi's

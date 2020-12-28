@@ -1,0 +1,28 @@
+// push constant 7
+@7		A=7
+D=A 	D=7
+@SP 	A=SP=0
+A=M 	A=RAM[0]=Stack[0]=256
+M=D 	RAM[256]=7
+@SP 	A=SP=0
+M=M+1 	RAM[0] = 256+1= 257 = Stack[1]
+// push constant 8
+@8		A=8
+D=A 	D=8
+@SP 	A=SP=0
+A=M 	A=RAM[0]=Stack[1]=257
+M=D 	RAM[257] = 8
+@SP		A=SP=0
+M=M+1 	RAM[0] = 257+1 = 258 = Stack[2] # next available slot
+// add
+@SP 	A=0											pop_stack_to_D()
+M=M-1 	RAM[0] = 258-1 = 257 = Stack[1]				|
+A=M 	A=257										|
+D=M 	D = RAM[257] # D = stack.pop()				|
+@SP		A=0											decrement_SP()
+M=M-1 	RAM[0] = 256								|
+@SP 	A=0											set_A_to_stack
+A=M 	A=RAM[0] = 256								|
+M=M+D 	RAM[256] = RAM[256]+D = RAM[256]+RAM[257]	ARITH_CMDS_NOJUMP
+@SP 	A=0											increment_SP()
+M=M+1 	RAM[0] = 257 = Stack[1]						|
