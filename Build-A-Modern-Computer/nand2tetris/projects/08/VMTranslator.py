@@ -78,9 +78,10 @@ OTHER_SEGMENTS = {
     "pointer": 3,   # R3, R4, basically this and that
     "temp": 5,      # R5-12
                     # R13-15 are free
-    "static": 16,   # R16-255
+    # "static": 16,   # R16-255
 }
 CONSTANT = "constant"
+STATIC = "static"
 
 # project 8
 # branching
@@ -90,18 +91,26 @@ IFGOTO = "if-goto"
 
 # function
 CALL = "call"
-FUNC = "function"
+FUNCTION = "function"
 RTN = "return"
 
 
 class VMTranslator:
     def __init__(self, vm_path):
-        self.vm_path = vm_path
-        self.vm_file_name = vm_path.split("/")[-1].rstrip(".vm")  # get vm file name
-        self.vm = [line.strip() for line in open(vm_path)]
-        self.asm_path = os.path.splitext(vm_path)[0] + ".asm"
+        self.vm_path = vm_path             # ProgramFlow/BasicLoop
+        if os.path.isdir(vm_path):
+            self.is_multi_file = True       # a.vm, a.mp4,  b.fxf,  c.vm
+            dirpath, dirnames, filenames = next(os.walk(self.vm_path), [[],[],[]])
+            self.vm_file_paths = [os.path.join(dirpath, f) for f in filenames if f.endswith(".vm")]
+            # print(vm_path.split("/")[-1])  # BasicLoop
+            self.asm_path = os.path.join(vm_path, vm_path.split("/")[-1]+".asm")
+        else:
+            self.is_multi_file = False
+            self.vm_file_paths = [vm_path]
+            self.asm_path = os.path.splitext(vm_path)[0] + ".asm"
         self.asm = []
         self.jmp_count = 0
+        self.call_count = 0
 
     def remove_comments(self):
         def clean(line):
@@ -123,41 +132,147 @@ class VMTranslator:
                 elif cmd in STACK_CMDS and num_args == 2:  # i.e. push, pop
                     self.parse_stack_ops(cmd, *args)
                 elif cmd == LABEL and num_args == 1:       # i.e. label LOOP_START
-                    self.parse_label_ops(*args)
+                    self.parse_label(*args)
                 elif cmd == GOTO and num_args == 1:        # i.e. goto END_PROGRAM 
-                    self.parse_goto_ops(*args)
+                    self.parse_goto(*args)
                 elif cmd == IFGOTO and num_args == 1:      # i.e. if-goto COMPUTE_ELEMENT
-                    self.parse_ifgoto_ops(*args)
-                elif cmd == FUNC and num_args == 2:
-                    self.parse_function_ops()
+                    self.parse_ifgoto(*args)
+                elif cmd == FUNCTION and num_args == 2:
+                    self.parse_function(*args)
                 elif cmd == CALL and num_args == 2:
-                    self.parse_call_ops()
+                    self.parse_call(*args)
                 elif cmd == RTN and num_args == 0:
-                    self.parse_return_ops()
+                    self.parse_return()
                 else:
                     raise ValueError(f"line {i}: {line}")
             except Exception as e:
-                print(line)
+                print(line, e)
                 #raise ValueError(f"line {i}: {line}, msg: {e}")
 
     # project08 - branching
-    def parse_label_ops(self, label):
+    def parse_label(self, label):
         self.asm.append(f"({self.vm_file_name}.{label})")
 
-    def parse_goto_ops(self, label):
-        self.asm.extend([f"@({self.vm_file_name}.{label})", "0;JMP"]) # unconditional jump
+    def parse_goto(self, label):
+        self.asm.extend([f"@{self.vm_file_name}.{label}", "0;JMP"]) # unconditional jump
    
-    def parse_ifgoto_ops(self, label):
+    def parse_ifgoto(self, label):
         self.pop_stack_to_D()                                         # pop the result of condition
         self.asm.extend([f"@{self.vm_file_name}.{label}", "D;JNE"])   # jump to that @address when D not equal to 0 (condition is met)
 
     # project08 - function
-    def parse_function_ops(self, func_name, local_num):
-        pass
-    def parse_call_ops(self, func_name, arg_num):
-        pass
-    def parse_return_ops(self):
-        pass
+    def parse_function(self, func_name, local_num):
+        """
+
+        (func_name)
+        repeat n(local_num) times:
+        push 0 for local variables
+
+        """
+        self.asm.append(f"({func_name})")
+
+        # push 0 - k times to create local variables
+        for _ in range(int(local_num)):
+            self.asm.append("D=0")
+            self.push_D_to_stack()
+
+    def parse_call(self, func_name, arg_num):
+        """
+
+        generate a label for return address and push it to stack
+        push LCL
+        push ARG
+        push THIS
+        push THAT
+        ARG = SP-n-5
+        LCL = SP
+        goto func_name
+        (return address)
+
+        """
+
+        RET = func_name + 'RET' + str(self.call_count) # Unique return label
+        self.call_count += 1
+
+        # push return address
+        self.asm.append('@' + RET)
+        self.asm.append('D=A')
+        self.push_D_to_stack()
+
+        # push LCL
+        # push ARG
+        # push THIS
+        # push THAT
+        for address in ["@LCL", "@ARG", "@THIS", "@THAT"]:
+            self.asm.append(address)
+            self.asm.append("D=M")
+            self.push_D_to_stack()
+
+        # LCL = SP
+        self.asm.append('@SP')
+        self.asm.append('D=M')
+        self.asm.append('@LCL')
+        self.asm.append('M=D')
+
+        # ARG = SP-n-5
+        # Reposition ARG
+        self.asm.append("@" + str(int(arg_num)+5))
+        self.asm.append("D=D-A")
+        self.asm.append("@ARG")
+        self.asm.append("M=D")
+
+        # goto function
+        self.asm.append('@' + func_name)
+        self.asm.append("0;JMP")
+
+        # (return address)
+        self.asm.append(f"({RET})")
+        
+    def parse_return(self):
+        """
+        moves the return value to the caller 
+        reinstates the caller's state
+        and then go to return address, copy the top most value to it
+        
+        endFrame = LCL                 // temp variable
+        RET = *(endFrame-5)  // get the return address
+        *ARG = pop()                   // repositions the return value to ARG[0]
+        SP = ARG[0] + 1                // reposition SP 
+        // restore 
+        THAT = *(endFrame-1)
+        THIS = *(endFrame-2)
+        ARG = *(endFrame-3)
+        LCL = *(endFrame-4)
+        goto RET
+
+        """
+        endFrame = "R13"
+        RET = "R14"
+
+        # endFrame = LCL
+        self.asm.extend(["@LCL", "D=M", "@"+endFrame, "M=D"])
+
+        # retAddr = *(endFrame-5)  
+        self.asm.extend(["@"+endFrame, "D=M", "@5", "D=D-A", "A=D", "D=M", "@"+RET, "M=D"])
+
+        # *ARG = pop()    
+        self.pop_stack_to_D()
+        self.asm.extend(["@ARG", "A=M", "M=D"])
+
+        # SP = ARG[0] + 1   
+        self.asm.extend(["@ARG", "D=M", "@SP", "M=D+1"])
+
+        # // restore 
+        # THAT = *(endFrame-1)
+        # THIS = *(endFrame-2)
+        # ARG = *(endFrame-3)
+        # LCL = *(endFrame-4)
+        for i, address in enumerate(["@THAT", "@THIS", "@ARG", "@LCL"], start=1):
+            self.asm.extend(["@"+endFrame, "D=M", "@"+str(i), "AD=D-A", "D=M", address, "M=D"])
+
+        # goto RET
+        self.asm.extend(["@"+RET, "A=M", "0;JMP"])
+
 
     # project07
     def parse_stack_ops(self, cmd, segment, index):
@@ -184,6 +299,8 @@ class VMTranslator:
         elif segment in OTHER_SEGMENTS:
             address = OTHER_SEGMENTS[segment]
             self.asm.extend([f"@R{address+index}"])
+        elif segment == STATIC:
+            self.asm.extend([f"@{self.vm_file_name}-{index}"])
         elif segment == CONSTANT:
             self.asm.extend([f"@{index}"])
 
@@ -234,10 +351,21 @@ class VMTranslator:
             for line in self.asm:
                 asm_file.write(line+"\n")
 
+    def write_init(self):
+        self.asm += ["//init", "@256", "D=A", "@SP", "M=D"]
+        self.parse_call("Sys.init", 0)
+
     def run(self):
-        self.remove_comments()
-        self.parse()
+        if self.is_multi_file:
+            self.write_init()
+        for vm_file_path in self.vm_file_paths:
+            self.vm_file_name = vm_file_path.split("/")[-1].rstrip(".vm")
+            self.asm.append(f"\n// ==={self.vm_file_name}===\n")
+            self.vm = [line.strip() for line in open(vm_file_path)]
+            self.remove_comments()
+            self.parse()
         self.save_asm_file()
+
 
 if __name__ == "__main__":
     trans = VMTranslator(sys.argv[1])
