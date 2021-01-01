@@ -1,3 +1,9 @@
+"""
+Translate asm to hack 
+run python3 HackAssembler.py add/Add.asm
+output: Add.hack
+"""
+
 import sys
 import os
 
@@ -123,6 +129,7 @@ class Assembler:
             return hex16(value)
 
     def parseC(self, line):
+        # dest = comp; jump
         dest, comp, jump = None, None, None
         # print(line, dest, comp, jump)
         if "=" in line:   
@@ -161,7 +168,7 @@ class Assembler:
                 hack_file.write(line+'\n')
 
 if __name__ == '__main__':
-    assembler = Assembler(sys.argv[1])
+    assembler = Assembler(sys.argv[1])  # terminal传进去的第二个参数
     assembler.run()
 
 
