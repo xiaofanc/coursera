@@ -1,5 +1,5 @@
 function MarioGame.new 0
-push constant 8
+push constant 6
 call Memory.alloc 1
 pop pointer 0
 push constant 200
@@ -21,7 +21,7 @@ add
 push constant 506
 push constant 48
 push constant 30
-call Cactus.new 3
+call Box.new 3
 pop temp 0
 pop pointer 1
 push temp 0
@@ -32,43 +32,37 @@ add
 push constant 606
 push constant 48
 push constant 25
-call Cactus.new 3
+call Box.new 3
 pop temp 0
 pop pointer 1
 push temp 0
 pop that 0
 push constant 0
-pop this 7
+pop this 5
 label WHILE_EXP0
-push this 7
+push this 5
 push this 2
 lt
 not
 if-goto WHILE_END0
-push this 7
+push this 5
 push this 1
 add
 pop pointer 1
 push that 0
 pop this 3
 push this 3
-call Cactus.draw 1
+call Box.draw 1
 pop temp 0
-push this 7
+push this 5
 push constant 1
 add
-pop this 7
+pop this 5
 goto WHILE_EXP0
 label WHILE_END0
 push pointer 0
 call MarioGame.drawGround 1
 pop temp 0
-push constant 96
-push constant 32
-call Coin.new 2
-pop this 4
-push constant 0
-pop this 5
 push pointer 0
 return
 function MarioGame.dispose 0
@@ -78,26 +72,26 @@ push this 0
 call Mario.dispose 1
 pop temp 0
 push constant 0
-pop this 7
+pop this 5
 label WHILE_EXP0
-push this 7
+push this 5
 push this 2
 lt
 not
 if-goto WHILE_END0
-push this 7
+push this 5
 push this 1
 add
 pop pointer 1
 push that 0
 pop this 3
 push this 3
-call Cactus.dispose 1
+call Box.dispose 1
 pop temp 0
-push this 7
+push this 5
 push constant 1
 add
-pop this 7
+pop this 5
 goto WHILE_EXP0
 label WHILE_END0
 push pointer 0
@@ -124,11 +118,11 @@ call Screen.drawLine 4
 pop temp 0
 push constant 0
 return
-function MarioGame.run 4
+function MarioGame.run 3
 push argument 0
 pop pointer 0
 push constant 0
-pop local 3
+pop local 2
 push constant 0
 push constant 0
 call Output.moveCursor 2
@@ -178,7 +172,7 @@ call String.appendChar 2
 call Output.printString 1
 pop temp 0
 label WHILE_EXP0
-push local 3
+push local 2
 not
 not
 if-goto WHILE_END0
@@ -188,24 +182,24 @@ push this 0
 call Mario.move 1
 pop temp 0
 push constant 0
-pop this 7
+pop this 5
 label WHILE_EXP1
-push this 7
+push this 5
 push this 2
 lt
 not
 if-goto WHILE_END1
-push this 7
+push this 5
 push this 1
 add
 pop pointer 1
 push that 0
 pop this 3
 push this 3
-call Cactus.move 1
+call Box.move 1
 pop temp 0
 push this 3
-call Cactus.getX 1
+call Box.getX 1
 pop local 1
 push local 1
 push constant 32
@@ -223,27 +217,15 @@ add
 push constant 3
 add
 push this 3
-call Cactus.getWidth 1
+call Box.getWidth 1
 lt
 if-goto IF_TRUE1
 goto IF_FALSE1
 label IF_TRUE1
-push this 6
+push this 4
 push constant 1
 add
-pop this 6
-push this 5
-not
-if-goto IF_TRUE2
-goto IF_FALSE2
-label IF_TRUE2
-push this 4
-call Coin.draw 1
-pop temp 0
-push constant 0
-not
-pop this 5
-label IF_FALSE2
+pop this 4
 push constant 0
 push constant 50
 call Output.moveCursor 2
@@ -266,76 +248,61 @@ push constant 32
 call String.appendChar 2
 call Output.printString 1
 pop temp 0
-push this 6
+push this 4
 call Output.printInt 1
 pop temp 0
 label IF_FALSE1
 push local 1
 push constant 10
 lt
-if-goto IF_TRUE3
-goto IF_FALSE3
-label IF_TRUE3
+if-goto IF_TRUE2
+goto IF_FALSE2
+label IF_TRUE2
 push this 3
-call Cactus.clear 1
+call Box.clear 1
 pop temp 0
 push this 3
 push constant 511
 push constant 100
 call Random.randRange 1
 add
-call Cactus.setX 2
+call Box.setX 2
 pop temp 0
 push this 3
 push constant 20
 push constant 10
 call Random.randRange 1
 add
-call Cactus.setW 2
+call Box.setW 2
 pop temp 0
-label IF_FALSE3
-push this 0
-call Mario.getBottomY 1
-push constant 0
-eq
-push this 5
-and
-if-goto IF_TRUE4
-goto IF_FALSE4
-label IF_TRUE4
-push this 4
-call Coin.clear 1
-pop temp 0
-push constant 0
-pop this 5
-label IF_FALSE4
+label IF_FALSE2
 label IF_FALSE0
-push this 7
+push this 5
 push constant 1
 add
-pop this 7
+pop this 5
 goto WHILE_EXP1
 label WHILE_END1
 push local 0
 push constant 32
 eq
-if-goto IF_TRUE5
-goto IF_FALSE5
-label IF_TRUE5
+if-goto IF_TRUE3
+goto IF_FALSE3
+label IF_TRUE3
 push this 0
 call Mario.jump 1
 pop temp 0
-label IF_FALSE5
+label IF_FALSE3
 push local 0
 push constant 81
 eq
-if-goto IF_TRUE6
-goto IF_FALSE6
-label IF_TRUE6
+if-goto IF_TRUE4
+goto IF_FALSE4
+label IF_TRUE4
 push constant 0
 not
-pop local 3
-label IF_FALSE6
+pop local 2
+label IF_FALSE4
 push constant 50
 call Sys.wait 1
 pop temp 0

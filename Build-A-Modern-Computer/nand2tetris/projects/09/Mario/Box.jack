@@ -1,7 +1,7 @@
-class Cactus {
+class Box {
     field int x, y, width;
 
-    constructor Cactus new(int x0, int y0, int w) {
+    constructor Box new(int x0, int y0, int w) {
         let x = x0;
         let y = y0;
         let width = w;
@@ -43,32 +43,10 @@ class Cactus {
         return;
     }
 
-    // draw the visible part of vertical line (when it can fit on screen)
-    // add defensive code to check x
-    // no need to check y, since y is static and alway valid
-    method void drawLineVisiblePart(int x, int y0, int y1) {
-        if (0 < x & x < 511) {
-            do Screen.drawLine(x, y0, x, y1);
-        }
-        return;
-    }
-
     method void drawOrClear(boolean color) {
         do Screen.setColor(color);
 
         do drawRectVisiblePart(x, y, x+width, y+10);
-
-
-        // trunk
-        // do drawRectVisiblePart(x-2, y-width, x+2, y);
-
-        // left branch
-        // do drawRectVisiblePart(x-5, y-width+8, x-4, y-10);
-        // do drawLineVisiblePart(x-3, y-8, y-10);
-
-        // right branch
-        // do drawRectVisiblePart(x+4, y-width+10, x+5, y-8);
-        // do drawLineVisiblePart(x+3, y-6, y-8);
 
         return;
     }
