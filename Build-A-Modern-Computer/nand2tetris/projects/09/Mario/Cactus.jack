@@ -1,0 +1,93 @@
+class Cactus {
+    field int x, y, width;
+
+    constructor Cactus new(int x0, int y0, int w) {
+        let x = x0;
+        let y = y0;
+        let width = w;
+        return this;
+    }
+
+    method void dispose() {
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method int getX() {
+        return x;
+    }
+
+    method int getWidth() {
+        return width;
+    }
+
+    method void setX(int x0) {
+        let x = x0;
+        return;
+    }
+
+    method void setW(int w) {
+        let width = w;
+        return;
+    }
+
+    // draw the visible part of rectangle (when it can fit on screen)
+    // add defensive code to check x
+    // no need to check y, since y is static and alway valid
+    method void drawRectVisiblePart(int x0, int y0, int x1, int y1) {
+        if (x1 > 0 & x0 < 511) {
+            do Screen.drawRectangle(
+                Math.max(x0, 0), y0,  Math.min(x1, 511), y1
+            );
+        }
+        return;
+    }
+
+    // draw the visible part of vertical line (when it can fit on screen)
+    // add defensive code to check x
+    // no need to check y, since y is static and alway valid
+    method void drawLineVisiblePart(int x, int y0, int y1) {
+        if (0 < x & x < 511) {
+            do Screen.drawLine(x, y0, x, y1);
+        }
+        return;
+    }
+
+    method void drawOrClear(boolean color) {
+        do Screen.setColor(color);
+
+        do drawRectVisiblePart(x, y, x+width, y+10);
+
+
+        // trunk
+        // do drawRectVisiblePart(x-2, y-width, x+2, y);
+
+        // left branch
+        // do drawRectVisiblePart(x-5, y-width+8, x-4, y-10);
+        // do drawLineVisiblePart(x-3, y-8, y-10);
+
+        // right branch
+        // do drawRectVisiblePart(x+4, y-width+10, x+5, y-8);
+        // do drawLineVisiblePart(x+3, y-6, y-8);
+
+        return;
+    }
+
+    method void draw() {
+        do drawOrClear(true);
+        return;
+    }
+
+    method void clear() {
+        do drawOrClear(false);
+        return;
+    }
+
+    method void move() {
+        do clear();
+        let x = x - 4;
+        do draw();
+        return;
+    }
+
+}

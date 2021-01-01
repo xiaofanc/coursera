@@ -1,0 +1,121 @@
+/**
+ * Implementation of the Mario game
+ */
+
+class MarioGame {
+    
+    // the running mario that player controls
+    field Mario mario;
+
+    // cactus is the road block that mario must jump over
+    field Array cacti;
+    field int numCacti;
+    field Cactus cactus;  // reference used in loop
+
+    field Coin coin;
+    field boolean showingCoin;
+
+    // score: keep track of current score
+    // i: index for cacti
+    field int score, i;
+
+    constructor MarioGame new() {
+        // initialize and draw mario
+        let mario = Mario.new(200-32);
+        do mario.draw();
+
+        // initialize array of cacti and draw them
+        let numCacti = 2;
+        let cacti = Array.new(numCacti);
+        let cacti[0] = Cactus.new(506, 48, 30);
+        let cacti[1] = Cactus.new(606, 48, 25);
+        let i = 0;
+        while (i<numCacti) {
+            let cactus = cacti[i];
+            do cactus.draw();
+            let i = i+1;
+        }
+        
+        // draw ground, a horizontal line
+        do drawGround();
+
+        let coin = Coin.new(96, 32);
+        let showingCoin = false;
+        
+        return this;
+    }
+
+    method void dispose() {
+        do mario.dispose();
+        let i = 0;
+        while (i<numCacti) {
+            // dispose all cacti
+            let cactus = cacti[i];
+            do cactus.dispose();
+            let i = i+1;
+        }
+        do Memory.deAlloc(this);
+        return;
+    }
+
+    method void drawGround() {
+        do Screen.drawLine(0+3, 200+1, 511-3, 200+1);
+        return;
+    }
+
+    method void run() {
+        var char key;       // the key currently pressed by the user
+        var int cactusX;    // cactus's x coordinate
+        var int rand;       // cache random number, which is computationally expensive
+        var boolean exit;
+        let exit = false;
+
+        do Output.moveCursor(0,0);
+        do Output.printString("[SPACE]Jump, [Q]Quit");
+
+        while (~exit) {
+            let key = Keyboard.keyPressed();
+            do mario.move();
+            let i = 0;
+            while (i<numCacti) {
+                let cactus = cacti[i];
+                do cactus.move();
+                let cactusX = cactus.getX();
+                if (cactusX < 32) {
+                    // mario hit cactus, then score ++
+                    if (mario.getBottomY() + Math.abs(cactusX-12) + 3 < cactus.getWidth()) {
+                        let score = score + 1;
+                        if (~showingCoin) {
+                            do coin.draw();
+                            let showingCoin = true;
+                        }
+                        do Output.moveCursor(0, 50);
+                        do Output.printString("Score: ");
+                        do Output.printInt(score);
+                    }
+
+                    // move cactus to the right of screen (reset X), set random height (20-40)
+                    if (cactusX < 10) {
+                        do cactus.clear();
+                        do cactus.setX(511+Random.randRange(100));
+                        do cactus.setW(20+Random.randRange(10));
+                    }
+
+                    if (mario.getBottomY() = 0 & showingCoin) {
+                        do coin.clear();
+                        let showingCoin = false;
+                    }
+                }
+                let i = i+1;
+            }
+            if (key = 32) { // space key
+                do mario.jump();
+            }
+            if (key = 81) { // q key
+                let exit = true;
+            }
+            do Sys.wait(50);
+        } // while
+        return;
+    }
+}
