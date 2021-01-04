@@ -11,3 +11,6 @@ CS fundamentals Specialization: https://www.coursera.org/specializations/cs-fund
 * Ordered-Data-Structures
 
 * Unordered-Data-Structures
+
+Build a Modern Computer from First Principles: From Nand to Tetris (Project-Centered Course): https://www.coursera.org/learn/build-a-computer
+
